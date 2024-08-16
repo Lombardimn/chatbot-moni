@@ -1,7 +1,7 @@
 {
-  "name": "base-bailey-json",
+  "name": "chatbot-moni",
   "version": "1.0.0",
-  "description": "",
+  "description": "A chatbot for management order and question of clients on WhatsApp.",
   "main": "dist/app.js",
   "type": "module",
   "scripts": {
