@@ -1,24 +1,29 @@
-import { createBot, createProvider, createFlow, addKeyword, utils } from '@builderbot/bot'
+import { createBot, createProvider, createFlow, addKeyword, utils, EVENTS } from '@builderbot/bot'
 import { MemoryDB as Database } from '@builderbot/bot'
 import { BaileysProvider as Provider } from '@builderbot/provider-baileys'
+import { pillValidator } from './services'
+import { welcomeFlow } from './flows'
 
 const PORT = process.env.PORT ?? 3008
 
-const welcomeFlow = addKeyword<Provider, Database>(['hi', 'hello', 'hola'])
-	.addAnswer(`🙌 Hello welcome to this *Chatbot*`)
-	.addAnswer(
-		[
-			'I share with you the following links of interest about the project',
-			'👉 *doc* to view the documentation',
-		].join('\n'),
-		{ delay: 800, capture: true },
-		async (ctx, { fallBack }) => {
-			if (!ctx.body.toLocaleLowerCase().includes('doc')) {
-				return fallBack('You should type *doc*')
-			}
-			return
+// Menu principal del modelo de negocio.
+const mainFlow = addKeyword(EVENTS.WELCOME)
+	.addAction(async (ctx, ctxFn) => {
+		const bodyText: string = ctx.body.toLowerCase()
+		
+		// Pildoras de llamadas.
+		const greetings = ['hola', 'buenas', 'que tal', 'buenos días', 'buenos dias', 'buen dia', 'buen dia']
+
+		//verificadores
+		const flagGreeting = pillValidator(greetings, bodyText)
+
+		// Respuestas.
+		if (flagGreeting) {
+			return ctxFn.gotoFlow(welcomeFlow)
 		}
-	)
+		
+		return await ctxFn.flowDynamic('flujo de falla de lectura de mensaje')
+	})
 
 const registerFlow = addKeyword<Provider, Database>(utils.setEvent('REGISTER_FLOW'))
 	.addAnswer(`What is your name?`, { capture: true }, async (ctx, { state }) => {
