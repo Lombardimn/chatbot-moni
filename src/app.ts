@@ -1,9 +1,8 @@
 import { createBot, createProvider, createFlow, addKeyword, utils, EVENTS } from '@builderbot/bot'
 import { MemoryDB as Database } from '@builderbot/bot'
 import { BaileysProvider as Provider } from '@builderbot/provider-baileys'
-import { pillValidator } from './services'
-import { supportFlow, welcomeFlow } from './flows'
-import * as fs from 'fs';
+import { pillValidator, readFile } from '@/services'
+import { supportFlow, welcomeFlow } from '@/flows'
 
 const PORT = process.env.PORT ?? 3008
 
@@ -11,14 +10,10 @@ const PORT = process.env.PORT ?? 3008
 const mainFlow = addKeyword(EVENTS.WELCOME)
 	.addAction(async (ctx, ctxFn) => {
 		const bodyText: string = ctx.body.toLowerCase()
-
-		// Leer el archivo JSON
-		const data = fs.readFileSync('./src/resources/pill.json', 'utf8')
-		const pills = JSON.parse(data)
 		
 		// Pildoras de llamadas.
-		const greetings = pills.greetings
-		const support = pills.support
+		const greetings = readFile('./src/resources/pill.json', 'greetings')
+		const support = readFile('./src/resources/pill.json', 'support')
 
 		//verificadores
 		const flagGreeting = pillValidator(greetings, bodyText)

@@ -1,12 +1,13 @@
 {
-  "promptIA": "Sos un asesor virtual para un restaurante llamado MONI. Te encargas de responder preguntas frecuentes de los usuarios. Responde corto y preciso en el idioma que te hablen. Te voy a pasar el menu que hay disponible y las preguntas frecuentes cotidianas. Las opciones separalas en un listado y siempre trata con amabilidad. Si preguntan algo fuera del ambito del negocio responde que no estas capacitado para tal consulta y que lo derivas a un asistente.",
+  "promptIA": "Sos un asesor virtual para un restaurante llamado MONI. Te encargas de responder preguntas frecuentes de los usuarios. Responde corto y preciso en el idioma que te hablen. Te voy a pasar el menu que hay disponible y las preguntas frecuentes cotidianas. Siempre que respodas mas de un articulo o items separalas en un listado y siempre trata con amabilidad. Agrega emojis si crees necesario para que la repuesta no sea fria. Siempre responde salteando el saludo. Si preguntan algo fuera del ambito del negocio responde que no estas capacitado para tal consulta y que lo derivas a un asistente.",
   "faq": {
     "1": "¿Cual es el horario de atención?, de lunes a viernes 09:00hs a 14:00hs",
     "2": "¿Hacen entregas a domicilio?, Sí, en los horarios de 12:00hs, 13:00hs y 14:00hs",
     "3": "¿Cual es la forma de pago?, Puedes pagar con transferencia o efectivo.",
     "4": "¿Que puedo pedir?, Puedes pedir una de las opciones del menu del día, pero no dudes en consultar si deseas algo distinto.",
     "5": "¿Como puedo realizar el pedido?, Puedes hacerlo por whatsapp o por llamado. Estamos trbajando para mejorar tu experiencia.",
-    "6": "¿Tienen menus para celiacos?, Si, tambien para vegetarianos y veganos."
+    "6": "¿Tienen menus para celiacos?, Si, tambien para vegetarianos y veganos.",
+    "7": "¿Cual es el menu del dia?, el menu del dia es el siguiente: (opciones del menu + precios sin tipo de moneda)"
   },
   "menus": {
     "1": {
