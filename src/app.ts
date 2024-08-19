@@ -1,9 +1,8 @@
 import { createBot, createProvider, createFlow, addKeyword, utils, EVENTS } from '@builderbot/bot'
 import { MemoryDB as Database } from '@builderbot/bot'
 import { BaileysProvider as Provider } from '@builderbot/provider-baileys'
-import { pillValidator } from './services'
-import { welcomeFlow } from './flows'
-import * as fs from 'fs';
+import { pillValidator, readFile } from '@/services'
+import { supportFlow, welcomeFlow } from '@/flows'
 
 const PORT = process.env.PORT ?? 3008
 
@@ -11,20 +10,26 @@ const PORT = process.env.PORT ?? 3008
 const mainFlow = addKeyword(EVENTS.WELCOME)
 	.addAction(async (ctx, ctxFn) => {
 		const bodyText: string = ctx.body.toLowerCase()
-
-		// Leer el archivo JSON
-		const data = fs.readFileSync('../resources/pill.json', 'utf8');
-		const pills = JSON.parse(data);
 		
 		// Pildoras de llamadas.
-		const greetings = pills.greetings
+		const greetings = readFile('./src/resources/pill.json', 'greetings')
+		const support = readFile('./src/resources/pill.json', 'support')
 
 		//verificadores
 		const flagGreeting = pillValidator(greetings, bodyText)
+		const flagSupport = pillValidator(support, bodyText)
 
 		// Respuestas.
-		if (flagGreeting) {
+		if (flagGreeting && !flagSupport) {
 			return ctxFn.gotoFlow(welcomeFlow)
+		}
+
+		if (!flagGreeting && flagSupport) {
+			return ctxFn.gotoFlow(supportFlow)
+		}
+
+		if (flagGreeting && flagSupport) {
+			return ctxFn.gotoFlow(supportFlow)
 		}
 		
 		return await ctxFn.flowDynamic('flujo de falla de lectura de mensaje')
@@ -42,7 +47,7 @@ const registerFlow = addKeyword<Provider, Database>(utils.setEvent('REGISTER_FLO
 	})
 
 const main = async () => {
-	const adapterFlow = createFlow([welcomeFlow, registerFlow])
+	const adapterFlow = createFlow([mainFlow, welcomeFlow, supportFlow, registerFlow])
 
 	const adapterProvider = createProvider(Provider)
 	const adapterDB = new Database()
