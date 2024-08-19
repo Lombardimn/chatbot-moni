@@ -1,4 +1,5 @@
 import { addKeyword, EVENTS } from "@builderbot/bot";
+import { supportFlow } from "./support.flow";
 
 export const welcomeFlow = addKeyword(EVENTS.ACTION)
   .addAnswer(`🙌 Hola soy Moni tu asistente virtual 🤖`,
@@ -12,7 +13,7 @@ export const welcomeFlow = addKeyword(EVENTS.ACTION)
     { delay: 800, capture: true },
     async (ctx, ctxFn) => {
       if (ctx.body.includes('consulta')) {
-        ctxFn.flowDynamic('flujo de atencion al cliente por IA')
+        ctxFn.gotoFlow(supportFlow)
       }
 
       if (ctx.body.includes('menu')) {
