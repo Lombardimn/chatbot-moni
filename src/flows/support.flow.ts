@@ -4,7 +4,7 @@ import * as fs from 'fs'
 import { PromptData } from "@/interfaces"
 
 export const supportFlow = addKeyword(EVENTS.ACTION)
-  .addAnswer(`¿Cual es tu consulta?`,
+  .addAnswer(`¿Cual es tu consulta? \nEstoy aquí para ayudarte 🦾🤖`,
     {
       delay: 800,
     }
