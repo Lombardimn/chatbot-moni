@@ -2,7 +2,7 @@ import { createBot, createProvider, createFlow, addKeyword, utils, EVENTS } from
 import { MemoryDB as Database } from '@builderbot/bot'
 import { BaileysProvider as Provider } from '@builderbot/provider-baileys'
 import { pillValidator, readFile } from '@/services'
-import { supportFlow, welcomeFlow } from '@/flows'
+import { feedbackFlow, supportFlow, welcomeFlow } from '@/flows'
 
 const PORT = process.env.PORT ?? 3008
 
@@ -32,7 +32,7 @@ const mainFlow = addKeyword(EVENTS.WELCOME)
 			return ctxFn.gotoFlow(supportFlow)
 		}
 		
-		return await ctxFn.flowDynamic('flujo de falla de lectura de mensaje')
+		return await ctxFn.gotoFlow(feedbackFlow)
 	})
 
 const registerFlow = addKeyword<Provider, Database>(utils.setEvent('REGISTER_FLOW'))
@@ -47,7 +47,7 @@ const registerFlow = addKeyword<Provider, Database>(utils.setEvent('REGISTER_FLO
 	})
 
 const main = async () => {
-	const adapterFlow = createFlow([mainFlow, welcomeFlow, supportFlow, registerFlow])
+	const adapterFlow = createFlow([mainFlow, welcomeFlow, supportFlow, feedbackFlow, registerFlow])
 
 	const adapterProvider = createProvider(Provider)
 	const adapterDB = new Database()
