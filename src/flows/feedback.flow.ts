@@ -1,5 +1,6 @@
 import { addKeyword, EVENTS } from "@builderbot/bot"
 import { supportFlow } from "./support.flow"
+import { liveAgentFlow } from "./liveAgent.flow"
 
 export const feedbackFlow = addKeyword(EVENTS.ACTION)
   .addAnswer(
@@ -26,7 +27,7 @@ export const feedbackFlow = addKeyword(EVENTS.ACTION)
       } else if (ctx.body.includes('3')) {
         return await ctxFn.gotoFlow(supportFlow)
       } else if (ctx.body.includes('4')) {
-        return await ctxFn.flowDynamic('flujo de asistencia personalizada')
+        return await ctxFn.gotoFlow(liveAgentFlow)
       } else {
         return await ctxFn.gotoFlow(feedbackFlow)
       }
