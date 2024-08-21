@@ -1,5 +1,6 @@
 import { addKeyword, EVENTS } from "@builderbot/bot";
 import { supportFlow } from "./support.flow";
+import { liveAgentFlow } from "./liveAgent.flow";
 
 export const welcomeFlow = addKeyword(EVENTS.ACTION)
   .addAnswer(`🙌 Hola soy Moni tu asistente virtual 🤖`,
@@ -29,7 +30,7 @@ export const welcomeFlow = addKeyword(EVENTS.ACTION)
       }
 
       if (ctx.body.includes('persona')) {
-        return await ctxFn.flowDynamic('flujo de atencion al cliente por persona')
+        return await ctxFn.gotoFlow(liveAgentFlow)
       }
     }
   )

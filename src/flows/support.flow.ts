@@ -2,6 +2,7 @@ import { addKeyword, EVENTS } from "@builderbot/bot"
 import { helperIA } from "@/helpers"
 import * as fs from 'fs'
 import { PromptData } from "@/interfaces"
+import { liveAgentFlow } from "./liveAgent.flow"
 
 export const supportFlow = addKeyword(EVENTS.ACTION)
   .addAnswer(`¿Cual es tu consulta? \nEstoy aquí para ayudarte 🦾🤖`,
@@ -56,7 +57,7 @@ export const supportFlow = addKeyword(EVENTS.ACTION)
       } else if (ctx.body.includes('3')) {
         return await ctxFn.flowDynamic('flujo de registro de pedidos')
       } else if (ctx.body.includes('4')) {
-        return await ctxFn.flowDynamic('flujo de asistencia personalizada')
+        return await ctxFn.gotoFlow(liveAgentFlow)
       } else {
         return await ctxFn.gotoFlow(supportFlow)
       }
