@@ -1,5 +1,5 @@
 import { blacklist } from '@/controllers'
-//import { addEntryToSheet, removeEntryFromSheet } from './googleSheets'
+import { formatDate, getLastRow, writeSheet } from '@/services'
 
 export const setupRoutes = (adapterProvider: any, handleCtx: any) => {
   adapterProvider.server.post('/v1/messages', handleCtx(async (bot, req, res) => {
@@ -35,6 +35,21 @@ export const setupRoutes = (adapterProvider: any, handleCtx: any) => {
           name,
           expiresAt: expirationDate 
         })
+
+        // Leer la ultima fila de Google Sheets
+        const lastRow = await getLastRow('Blacklist')
+        const newRange = `Blacklist!A${lastRow + 1}:D${lastRow + 1}`
+
+        // Carga en Google Sheets
+        await writeSheet(
+          [[
+            formatDate(now),
+            number,
+            name,
+            formatDate(expirationDate)
+          ]],
+          newRange
+        )
       }
 
       res.writeHead(200, { 'Content-Type': 'application/json' })

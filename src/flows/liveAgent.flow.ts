@@ -19,7 +19,7 @@ export const liveAgentFlow = addKeyword(EVENTS.ACTION)
             number: userNumber,
             name: userName,
             intent: 'add',
-            duration: 1 // duración en minutos
+            duration: 2 // duración en minutos
         })        
       })
     }

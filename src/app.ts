@@ -1,8 +1,6 @@
-import { createBot, createProvider, createFlow } from '@builderbot/bot'
-import { MemoryDB as Database } from '@builderbot/bot'
+import { createBot, createProvider, createFlow, MemoryDB as Database } from '@builderbot/bot'
 import { BaileysProvider as Provider } from '@builderbot/provider-baileys'
-import { mainFlow, registerFlow } from '@/flows'
-import { welcomeFlow, supportFlow, feedbackFlow, liveAgentFlow } from '@/flows'
+import { mainFlow, registerFlow, welcomeFlow, supportFlow, feedbackFlow, liveAgentFlow } from '@/flows'
 import { PORT } from '@/config'
 import { setupRoutes } from '@/routes'
 import { startBlacklistCleaner } from '@/controllers'
@@ -17,14 +15,14 @@ const setupServer = async () => {
         provider: adapterProvider,
         database: adapterDB,
     })
+    httpServer(+PORT)
 
      // Configurar rutas
-     setupRoutes(adapterProvider, handleCtx)
+    setupRoutes(adapterProvider, handleCtx)
 
      // Iniciar la tarea programada para limpiar la blacklist
-    startBlacklistCleaner();
+    startBlacklistCleaner()
 
-    httpServer(+PORT)
 }
 
 setupServer()
