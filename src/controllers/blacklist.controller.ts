@@ -35,5 +35,5 @@ export const startBlacklistCleaner = () => {
   setInterval(() => {
       console.log('Cleaning blacklist')
       blacklist.checkExpired()
-  }, 300000) // Verifica cada minuto (60000 = 1 min)
+  }, 60000) // Verifica cada minuto (60000 = 1 min)
 }
