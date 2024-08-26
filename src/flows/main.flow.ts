@@ -6,6 +6,7 @@ import { feedbackFlow } from "./feedback.flow"
 import { addKeyword, EVENTS } from "@builderbot/bot"
 import { PILL_PATH } from "@/config"
 import { blacklist } from "@/controllers"
+import { registerFlow } from "./register.flow"
 
 // Menu principal del modelo de negocio.
 export const mainFlow = addKeyword(EVENTS.WELCOME)
@@ -19,6 +20,10 @@ export const mainFlow = addKeyword(EVENTS.WELCOME)
         console.log(`Número ${userNumber} está en la blacklist, no se activará ningún flujo.`);
         return // No se activa ningún flujo
     }
+
+		if (bodyText.includes('registrar')) {
+			return ctxFn.gotoFlow(registerFlow)
+		}
 
 		// Pildoras de llamadas.
 		const greetings = readFile(PILL_PATH, 'greetings')

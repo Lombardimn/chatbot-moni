@@ -19,3 +19,4 @@ export const SCOPE_GOOGLE = process.env.SCOPE_GOOGLE ?? '//www.googleapis.com'
 // RUTAS API
 
 export const API_BLACKLIST = process.env.API_BLACKLIST ?? '/blacklist'
+export const API_REGISTER = process.env.API_REGISTER ?? '/register'
