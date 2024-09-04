@@ -1,5 +1,5 @@
 export interface BlacklistEntry {
-  number: string;
-  name: string;
-  expiresAt: Date;
+  number: string
+  name: string
+  expiresAt: Date | string
 }

@@ -4,6 +4,7 @@ import { mainFlow, registerFlow, welcomeFlow, supportFlow, feedbackFlow, liveAge
 import { PORT } from '@/config'
 import { setupRoutes } from '@/routes'
 import { startBlacklistCleaner } from '@/controllers'
+import { registerDataServer } from '@/services'
 
 const setupServer = async () => {
     const adapterFlow = createFlow([mainFlow, welcomeFlow, supportFlow, feedbackFlow, liveAgentFlow, registerFlow])
@@ -15,6 +16,7 @@ const setupServer = async () => {
         provider: adapterProvider,
         database: adapterDB,
     })
+    
     httpServer(+PORT)
 
      // Configurar rutas
@@ -22,6 +24,9 @@ const setupServer = async () => {
 
      // Iniciar la tarea programada para limpiar la blacklist
     startBlacklistCleaner()
+
+    // Inicio el servidor con todos los registros de clientes
+    registerDataServer()
 
 }
 
