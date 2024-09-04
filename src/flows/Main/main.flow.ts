@@ -1,16 +1,12 @@
 import { pillValidator, readFile } from "@/services"
-import { welcomeFlow } from "./welcome.flow"
-import { supportFlow } from "./support.flow"
-import { liveAgentFlow } from "./liveAgent.flow"
-import { feedbackFlow } from "./feedback.flow"
+import { welcomeFlow, supportFlow, liveAgentFlow, feedbackFlow, registerFlow } from "@/flows"
 import { addKeyword, EVENTS } from "@builderbot/bot"
 import { PILL_PATH } from "@/config"
-import { blacklist } from "@/controllers"
-import { registerFlow } from "./register.flow"
+import { blacklist, clientRegistry } from "@/controllers"
 
 // Menu principal del modelo de negocio.
 export const mainFlow = addKeyword(EVENTS.WELCOME)
-	.addAction(async (ctx, ctxFn) => {
+	.addAction(async (ctx, { gotoFlow }) => {
 		const bodyText: string = ctx.body.toLowerCase()
     
     // Verificar si el número está en la blacklist
@@ -21,8 +17,12 @@ export const mainFlow = addKeyword(EVENTS.WELCOME)
         return // No se activa ningún flujo
     }
 
-		if (bodyText.includes('registrar')) {
-			return ctxFn.gotoFlow(registerFlow)
+		// Verificar si esta registrado
+		if (await clientRegistry.isRegistered(userNumber)) {
+			console.log(`El usuario ${userNumber} está registrado.`)
+			return // no se acitiva ningun flujo
+		} else if (bodyText.includes('registrar')) {
+				return gotoFlow(registerFlow)	
 		}
 
 		// Pildoras de llamadas.
@@ -37,24 +37,24 @@ export const mainFlow = addKeyword(EVENTS.WELCOME)
 
 		// Respuestas.
 		if (flagGreeting && !flagSupport && !flagLiveAgent) {
-			return ctxFn.gotoFlow(welcomeFlow)
+			return gotoFlow(welcomeFlow)
 		}
 
 		if (!flagGreeting && flagSupport && !flagLiveAgent) {
-			return ctxFn.gotoFlow(supportFlow)
+			return gotoFlow(supportFlow)
 		}
 
 		if (flagGreeting && flagSupport && !flagLiveAgent) {
-			return ctxFn.gotoFlow(supportFlow)
+			return gotoFlow(supportFlow)
 		}
 
 		if (flagGreeting && !flagSupport && flagLiveAgent) {
-			return ctxFn.gotoFlow(liveAgentFlow)
+			return gotoFlow(liveAgentFlow)
 		}
 
     if (!flagGreeting && !flagSupport && flagLiveAgent) {
-			return ctxFn.gotoFlow(liveAgentFlow)
+			return gotoFlow(liveAgentFlow)
 		}
 		
-		return await ctxFn.gotoFlow(feedbackFlow)
+		return gotoFlow(feedbackFlow)
 	})

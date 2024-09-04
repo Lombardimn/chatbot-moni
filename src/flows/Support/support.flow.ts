@@ -2,7 +2,7 @@ import { addKeyword, EVENTS } from "@builderbot/bot"
 import { helperIA } from "@/helpers"
 import * as fs from 'fs'
 import { PromptData } from "@/interfaces"
-import { liveAgentFlow } from "./liveAgent.flow"
+import { liveAgentFlow } from "@/flows"
 
 export const supportFlow = addKeyword(EVENTS.ACTION)
   .addAnswer(`¿Cual es tu consulta? \nEstoy aquí para ayudarte 🦾🤖`,
@@ -15,7 +15,7 @@ export const supportFlow = addKeyword(EVENTS.ACTION)
       capture: true,
       delay: 800,
     }, 
-    async (ctx, ctxFn) => {
+    async (ctx, { flowDynamic }) => {
       // Leer el archivo JSON
       const data = fs.readFileSync('./src/resources/prompts.json', 'utf8')
       const values: PromptData = JSON.parse(data)
@@ -35,7 +35,7 @@ export const supportFlow = addKeyword(EVENTS.ACTION)
       const context = ctx.body; 
       const response = await helperIA(prompt, context)
     
-      await ctxFn.flowDynamic(response)
+      await flowDynamic(response)
     }
   )
   .addAnswer(`
@@ -49,17 +49,17 @@ export const supportFlow = addKeyword(EVENTS.ACTION)
       delay: 800,
       capture: true
     },
-    async (ctx, ctxFn) => {
+    async (ctx, { flowDynamic, gotoFlow}) => {
       if (ctx.body.includes('1')) {
-        return await ctxFn.gotoFlow(supportFlow)
+        return gotoFlow(supportFlow)
       } else if (ctx.body.includes('2')) {
-        return await ctxFn.flowDynamic('Hasta pronto 👋')
+        return await flowDynamic('Hasta pronto 👋')
       } else if (ctx.body.includes('3')) {
-        return await ctxFn.flowDynamic('flujo de registro de pedidos')
+        return await flowDynamic('flujo de registro de pedidos')
       } else if (ctx.body.includes('4')) {
-        return await ctxFn.gotoFlow(liveAgentFlow)
+        return gotoFlow(liveAgentFlow)
       } else {
-        return await ctxFn.gotoFlow(supportFlow)
+        return gotoFlow(supportFlow)
       }
     }
   )

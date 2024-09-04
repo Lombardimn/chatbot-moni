@@ -18,7 +18,7 @@ class Blacklist {
   checkExpired() {
       const now = new Date()
       this.list = this.list.filter(user => {
-          if (user.expiresAt > now) {
+          if (new Date(user.expiresAt) > now) { // probando 
               return true
           } else {
               console.log(`Removing ${user.number} from blacklist`)

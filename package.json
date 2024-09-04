@@ -18,18 +18,18 @@
     "dotenv": "^16.4.5",
     "gaxios": "^6.7.1",
     "googleapis": "^140.0.1",
-    "openai": "^4.56.0"
+    "openai": "^4.57.1"
   },
   "devDependencies": {
-    "@types/node": "^20.16.1",
+    "@types/node": "^20.16.4",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "eslint": "^8.57.0",
     "eslint-plugin-builderbot": "latest",
     "nodemon": "^3.1.4",
-    "rollup": "^4.21.0",
+    "rollup": "^4.21.2",
     "rollup-plugin-typescript2": "^0.36.0",
-    "tsx": "^4.17.0",
+    "tsx": "^4.19.0",
     "typescript": "^5.5.4"
   },
   "author": "",

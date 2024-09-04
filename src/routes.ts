@@ -9,19 +9,21 @@ export const setupRoutes = (adapterProvider: any, handleCtx: any) => {
   }))
 
   adapterProvider.server.post('/v1/register', handleCtx(async (bot, req, res) => {
-    const { number, name, address, hourDelivery } = req.body
+    const { number, name, address, hourDelivery, intent } = req.body
     const updatedAt = new Date()
     const createdAt = new Date()
-    try {
+
+    if (intent === 'add') {
       // Leer el registro de Google Sheets
       const lastRow = await getLastRow('Clientes')
       const data = await readSheet(`Clientes!A1:F${lastRow}`)
-  
+
       if (data && data.find((item: any) => item['Número'] === number)) {
         return res.end('already registered')
       } else {
         // Registrar el cliente en el registro local
         clientRegistry.add({ number, name, address, hourDelivery, updatedAt, createdAt })
+        console.log('Cliente registrado:', { number, name, address, hourDelivery, updatedAt, createdAt })
   
         // Escribir el nuevo registro en Google Sheets
         const newRange = `Clientes!A${lastRow + 1}:F${lastRow + 1}`
@@ -35,28 +37,25 @@ export const setupRoutes = (adapterProvider: any, handleCtx: any) => {
             formatDate(createdAt)
           ]
         ], newRange)
-  
-        return res.end('trigger')
       }
-    } catch (error) {
-      console.error('Error al registrar el cliente:', error)
-      res.status(500).send('Error al registrar el cliente')
     }
+
+    if (intent === 'initialize') {
+      clientRegistry.add({ number, name, address, hourDelivery, updatedAt, createdAt })
+    }
+
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    return res.end(JSON.stringify({ status: 'ok', number, name }))
   }))
 
   adapterProvider.server.get('/v1/register', handleCtx(async (bot, req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' })
-    return res.end(JSON.stringify(blacklist))
-  }))
-
-  adapterProvider.server.post('/v1/samples', handleCtx(async (bot, req, res) => {
-    const { number, name } = req.body
-    await bot.dispatch('SAMPLES', { from: number, name })
-    return res.end('trigger')
+    return res.end(JSON.stringify(clientRegistry))
   }))
 
   adapterProvider.server.post('/v1/blacklist', handleCtx(async (bot, req, res) => {
     const { number, name, intent, duration } = req.body
+    
     if (intent === 'remove') {
       blacklist.remove(number)
     }
@@ -85,6 +84,14 @@ export const setupRoutes = (adapterProvider: any, handleCtx: any) => {
         ]],
         newRange
       )
+    }
+
+    if (intent === 'initialize') {
+      blacklist.add({
+        number,
+        name,
+        expiresAt: duration
+      })
     }
 
     res.writeHead(200, { 'Content-Type': 'application/json' })

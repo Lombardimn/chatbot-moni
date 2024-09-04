@@ -1,7 +1,7 @@
 import { ClientEntry } from "@/interfaces"
 
 class ClientRegistry {
-  private list: ClientEntry[] = [];
+  private list: ClientEntry[] = []
 
   add(client: ClientEntry) {
     this.list.push(client)
