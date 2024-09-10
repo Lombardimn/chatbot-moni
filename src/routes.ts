@@ -1,4 +1,4 @@
-import { blacklist, clientRegistry } from '@/controllers'
+import { blacklist, clientRegistry, orderRegistry } from '@/controllers'
 import { formatDate, getLastRow, readSheet, writeSheet } from '@/services'
 
 export const setupRoutes = (adapterProvider: any, handleCtx: any) => {
@@ -101,5 +101,39 @@ export const setupRoutes = (adapterProvider: any, handleCtx: any) => {
   adapterProvider.server.get('/v1/blacklist', handleCtx(async (bot, req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' })
     return res.end(JSON.stringify(blacklist))
+  }))
+
+  adapterProvider.server.post('/v1/orders', handleCtx(async (bot, req, res) => {
+    const { number, name, address, hourDelivery, intent } = req.body
+    const createdAt = new Date()
+
+    if (intent === 'add') {
+      // Buscamos si ya ha registrado una orden en Google Sheets
+      const lastRow = await getLastRow('Movimientos')
+      const data = await readSheet(`Movimientos!A10:F${lastRow}`)
+
+      if (data && data.find((item: any) => item['Número'] === number)) {
+        return res.end('already registered')
+      } else {
+        // Registrar la orden en Google Sheets
+        const newRange = `Movimientos!A${lastRow + 1}:F${lastRow + 1}`
+        await writeSheet([
+          [
+            number,
+            name,
+            address,
+            hourDelivery,
+            formatDate(createdAt)
+          ]
+        ], newRange)
+      }
+    }
+
+    if (intent === 'remove') {
+      orderRegistry.remove(number)
+    }
+
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    return res.end(JSON.stringify({ status: 'ok', number, name }))
   }))
 }

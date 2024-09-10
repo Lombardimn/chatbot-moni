@@ -1,5 +1,5 @@
 import { pillValidator, readFile } from "@/services"
-import { welcomeFlow, supportFlow, liveAgentFlow, feedbackFlow, registerFlow } from "@/flows"
+import { welcomeFlow, supportFlow, liveAgentFlow, feedbackFlow, registerFlow, orderFlow } from "@/flows"
 import { addKeyword, EVENTS } from "@builderbot/bot"
 import { PILL_PATH } from "@/config"
 import { blacklist, clientRegistry } from "@/controllers"
@@ -18,9 +18,9 @@ export const mainFlow = addKeyword(EVENTS.WELCOME)
     }
 
 		// Verificar si esta registrado
-		if (await clientRegistry.isRegistered(userNumber)) {
+		if (bodyText.includes('ordenar')) {
 			console.log(`El usuario ${userNumber} está registrado.`)
-			return // no se acitiva ningun flujo
+			return gotoFlow(orderFlow) //Se envia a la gestión de ordenes
 		} else if (bodyText.includes('registrar')) {
 				return gotoFlow(registerFlow)	
 		}

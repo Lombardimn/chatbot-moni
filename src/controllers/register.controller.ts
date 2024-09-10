@@ -18,6 +18,10 @@ class ClientRegistry {
   getAllClients() {
     return this.list
   }
+
+  getClient(number: string) {
+    return this.list.find(client => client.number === number)
+  }
 }
 
 export const clientRegistry = new ClientRegistry()

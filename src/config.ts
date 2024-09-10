@@ -20,3 +20,4 @@ export const SCOPE_GOOGLE = process.env.SCOPE_GOOGLE ?? '//www.googleapis.com'
 
 export const API_BLACKLIST = process.env.API_BLACKLIST ?? '/blacklist'
 export const API_REGISTER = process.env.API_REGISTER ?? '/register'
+export const API_ORDER = process.env.API_ORDER ?? '/order'
