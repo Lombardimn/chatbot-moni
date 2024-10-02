@@ -1,19 +1,25 @@
 import { API_ORDER } from '@/config'
-import { clientRegistry } from '@/controllers'
+import { geterCustomer } from '@/services/geterCustomer.service'
 import { EVENTS, addKeyword } from '@builderbot/bot'
 
 export const orderFlow = addKeyword(EVENTS.ACTION)
-  .addAnswer('',
+  .addAnswer(
+    ['Genial'],
     { delay: 800 },
-    async (ctx, {flowDynamic}) => {
-      await flowDynamic('Genial, vamos a proceder a realizar tu pedido. 😊')
+    async (_, {flowDynamic}) => {
+      await flowDynamic('Vamos a proceder a realizar tu pedido. 😊')
     }
   )
   .addAction(
-    { delay: 1000, capture: true },
-    async (ctx, { flowDynamic, state }) => {
-      const number = ctx.from
-      const { name, address, hourDelivery } = await clientRegistry.getClient(number)
+    { capture: true },
+    async (ctx, {state, flowDynamic}) => {
+      const userNumber: string = ctx.from
+
+      const response = await geterCustomer(userNumber)
+
+      const name = response?.name
+      const address = response?.address
+      const hourDelivery = response?.hourDelivery
 
       await state.update({ name, address, hourDelivery })
 
@@ -21,7 +27,7 @@ export const orderFlow = addKeyword(EVENTS.ACTION)
     }
   )
   .addAction(
-    { delay: 1000, capture: true },
+    { capture: true },
     async (ctx, { flowDynamic, state }) => {
       const menu = 'menu'
       const price = 'price'

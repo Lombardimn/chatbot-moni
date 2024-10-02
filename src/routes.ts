@@ -49,6 +49,18 @@ export const setupRoutes = (adapterProvider: any, handleCtx: any) => {
   }))
 
   adapterProvider.server.get('/v1/register', handleCtx(async (bot, req, res) => {
+    const { number, intent } = req.query
+
+    if (intent === 'geter') {
+      console.log(`Buscando cliente con número: ${number}`)
+      
+      const client = clientRegistry.getClient(number)
+      
+      console.log('Cliente encontrado:', client)
+      
+      return res.end(JSON.stringify(client))
+    }
+
     res.writeHead(200, { 'Content-Type': 'application/json' })
     return res.end(JSON.stringify(clientRegistry))
   }))

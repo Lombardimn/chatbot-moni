@@ -58,7 +58,6 @@ export const registerDataServer = async () => {
       const list: BlacklistEntry[] = []
       // Eliminar registros con fechas pasadas
       mappedBlacklist.map((data: any) => {
-        console.log('dataexp: ', data.expiresAt, 'newDate: ', new Date())
         if (new Date(data.expiresAt) >= new Date()) {
           list.push(data)
         }

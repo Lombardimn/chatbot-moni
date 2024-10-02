@@ -2,7 +2,7 @@ import { pillValidator, readFile } from "@/services"
 import { welcomeFlow, supportFlow, liveAgentFlow, feedbackFlow, registerFlow, orderFlow } from "@/flows"
 import { addKeyword, EVENTS } from "@builderbot/bot"
 import { PILL_PATH } from "@/config"
-import { blacklist, clientRegistry } from "@/controllers"
+import { blacklist } from "@/controllers"
 
 // Menu principal del modelo de negocio.
 export const mainFlow = addKeyword(EVENTS.WELCOME)
@@ -21,7 +21,9 @@ export const mainFlow = addKeyword(EVENTS.WELCOME)
 		if (bodyText.includes('ordenar')) {
 			console.log(`El usuario ${userNumber} está registrado.`)
 			return gotoFlow(orderFlow) //Se envia a la gestión de ordenes
-		} else if (bodyText.includes('registrar')) {
+		}
+		
+		if (bodyText.includes('registrar')) {
 				return gotoFlow(registerFlow)	
 		}
 
